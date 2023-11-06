@@ -12,6 +12,7 @@ import EditProd from "../pages/EditProd";
 import DelProd from "../pages/DelProd";
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
+import ErrorBox from "../components/ErrorBox";
 
 const router = createBrowserRouter([
     {
@@ -45,6 +46,9 @@ const router = createBrowserRouter([
             }, {
                 path: "/del-prod",
                 element: <DelProd />,
+            }, {
+                path: "*",
+                element: <ErrorBox />,
             }
         ],
     }, {
@@ -53,6 +57,9 @@ const router = createBrowserRouter([
     }, {
         path: "/signup",
         element: <SignUp />,
+    }, {
+        path: "*",
+        element: <ErrorBox />,
     }
 ]);
 

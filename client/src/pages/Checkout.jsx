@@ -1,13 +1,39 @@
 // importing from react
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 // importing stylesheets
 import "../style/checkout.css";
 import "../style/shop.css";
 import "../style/form.css";
 import Product from "../components/Product";
+// importing contexts
+import { Store } from "../config/utils";
+import axios from "axios";
+import { delay } from "../config/utils";
 
 export default function Checkout() {
+    const navigate = useNavigate();
+
+    const { state, dispatch: ctxDispatch } = useContext(Store);
+    const { cart: { cartItems }, userInfo } = state;
+
+    function roundToTwo(num) {
+        return +(Math.round(num + "e+2") + "e-2");
+    }
+
+    const subtotal = roundToTwo(cartItems.reduce((a, c) => a + (c.prodPrice * c.quantity), 0));
+    const tax = roundToTwo(subtotal * 0.09);
+
     const [msg, setMsg] = useState("");
+    const [color, setColor] = useState("");
+
+    const [sendCart, setSendCart] = useState({});
+
+    useEffect(() => {
+        if (!userInfo) {
+            navigate('/signin');
+        }
+    }, []);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -30,73 +56,86 @@ export default function Checkout() {
         }))
     }
 
-    function handleSubmit() {
-        // pass the states into db
-    }
+    async function handleSubmit(event) {
+        event.preventDefault();
+        try {
+            await cartItems.map((item) => {
+                console.log(item);
+                setSendCart(prevState => {
+                    return {
+                        ...prevState,
+                        [item.prodName]: item.quantity
+                    }
+                })
+            });
 
-    const products = [{
-        name: "EGGS",
-        qty: "6 pieces",
-        price: 59.99,
-        type: "packaged",
-        url: "eggs6"
-    }, {
-        name: "PASTA",
-        qty: "100g",
-        price: 24.99,
-        type: "packaged",
-        url: "pasta"
-    }, {
-        name: "CEREALS",
-        qty: "250g",
-        price: 63.49,
-        type: "packaged",
-        url: "cereals"
-    }];
+            const { data } = await axios.post('/api/orders/place', {
+                id: userInfo._id,
+                name: formData.name,
+                email: formData.email,
+                address: formData.address + ", " + formData.city + ", " + formData.state + ", " + formData.zip,
+                purchase: sendCart
+            });
+            if (data.message === "Order placed!") {
+                ctxDispatch({
+                    type: 'CART_CLEAR',
+                });
+                setMsg(data.message);
+                setColor("green");
+                await delay(1000);
+                setMsg("Redirecting... wait");
+                await delay(500);
+                navigate("/");
+            }
+        } catch (error) {
+            setMsg("Couldn't place order!");
+            setColor("red");
+        }
+    }
 
     return (
         <>
             <div className="checkout flex">
                 <div className="checkout-form">
                     <div className="form">
-                        <h1 class="title">Checkout With Your Purchase</h1>
-                        <h1 class="subtitle">** Enter authentic details to complete the purchase **</h1>
-                        <form action="?" method="post">
-                            <div class="input-box">
-                                <div class="input msg" id="{{msgColor}}">
+                        <h1 className="title">Checkout With Your Purchase</h1>
+                        <h1 className="subtitle">** Enter authentic details to complete the purchase **</h1>
+                        <form onSubmit={handleSubmit}>
+                            <div className="input-box">
+                                <div className="input msg" id={color}>
                                     {msg}
                                 </div>
                             </div>
 
-                            <h1 class="title">Billing Details:</h1>
+                            <h1 className="title">Billing Details:</h1>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="fullname">
-                                    <i class="fa fa-user"></i> Full Name:
+                                    <i className="fa fa-user"></i> Full Name:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="text"
-                                    name="fullname"
-                                    id="fullname"
+                                    name="name"
+                                    id="name"
                                     value={formData.name}
                                     onChange={handleChange}
-                                    placeholder="Eg: Hardik Shah"
+                                    placeholder="Eg: John Doe"
                                     autocomplete="off"
                                     required
                                 />
                             </div>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="email">
-                                    <i class="fa fa-envelope"></i> Email:
+                                    <i className="fa fa-envelope"></i> Email:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="email"
                                     name="email"
                                     id="email"
@@ -108,14 +147,14 @@ export default function Checkout() {
                                 />
                             </div>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="name">
-                                    <i class="fa fa-address-card-o"></i> Address:
+                                    <i className="fa fa-address-card-o"></i> Address:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="text"
                                     name="address"
                                     id="address"
@@ -127,14 +166,14 @@ export default function Checkout() {
                                 />
                             </div>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="city">
-                                    <i class="fa fa-institution"></i> City:
+                                    <i className="fa fa-institution"></i> City:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="text"
                                     name="city"
                                     id="city"
@@ -146,14 +185,14 @@ export default function Checkout() {
                                 />
                             </div>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="state">
-                                    <i class="fa-solid fa-mountain-city"></i> State:
+                                    <i className="fa-solid fa-mountain-city"></i> State:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="text"
                                     name="state"
                                     id="state"
@@ -165,14 +204,14 @@ export default function Checkout() {
                                 />
                             </div>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="zip">
-                                    <i class="fa-solid fa-location-crosshairs"></i> Zip:
+                                    <i className="fa-solid fa-location-crosshairs"></i> Zip:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="number"
                                     name="zip"
                                     id="zip"
@@ -184,45 +223,45 @@ export default function Checkout() {
                                 />
                             </div>
 
-                            <h1 class="title">Payment Details:</h1>
-                            <h1 class="subtitle">Accepted Cards</h1>
-                            <h1 class="flex gap-5 title">
-                                <i class="fa fa-cc-visa" id="navy-card"></i>
-                                <i class="fa fa-cc-amex" id="blue-card"></i>
-                                <i class="fa fa-cc-mastercard" id="red-card"></i>
-                                <i class="fa fa-cc-discover" id="orange-card"></i>
+                            <h1 className="title">Payment Details:</h1>
+                            <h1 className="subtitle">Accepted Cards</h1>
+                            <h1 className="flex gap-5 title">
+                                <i className="fa fa-cc-visa" id="navy-card"></i>
+                                <i className="fa fa-cc-amex" id="blue-card"></i>
+                                <i className="fa fa-cc-mastercard" id="red-card"></i>
+                                <i className="fa fa-cc-discover" id="orange-card"></i>
                             </h1>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="city">
-                                    <i class="fa-solid fa-signature"></i> Name on the card:
+                                    <i className="fa-solid fa-signature"></i> Name on the card:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="text"
-                                    name="card-name"
-                                    id="card-name"
+                                    name="card_name"
+                                    id="card_name"
                                     value={formData.card_name}
                                     onChange={handleChange}
-                                    placeholder="Eg: Hardik T Shah"
+                                    placeholder="Eg: John Doe"
                                     autocomplete="off"
                                     required
                                 />
                             </div>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="card-no">
-                                    <i class="fa-solid fa-list-ol"></i> Card Number:
+                                    <i className="fa-solid fa-list-ol"></i> Card Number:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="text"
-                                    name="card-no"
-                                    id="card-no"
+                                    name="card_no"
+                                    id="card_no"
                                     value={formData.card_no}
                                     onChange={handleChange}
                                     placeholder="Eg: 1234-5678-1011-1213"
@@ -231,17 +270,17 @@ export default function Checkout() {
                                 />
                             </div>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="card-exp">
-                                    <i class="fa-solid fa-calendar-days"></i> Expiry Date:
+                                    <i className="fa-solid fa-calendar-days"></i> Expiry Date:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="month"
-                                    name="card-exp"
-                                    id="card-exp"
+                                    name="card_exp"
+                                    id="card_exp"
                                     value={formData.card_exp}
                                     onChange={handleChange}
                                     autocomplete="off"
@@ -249,17 +288,17 @@ export default function Checkout() {
                                 />
                             </div>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <label
                                     for="card-cvv">
-                                    <i class="fa-solid fa-key"></i> CVV:
+                                    <i className="fa-solid fa-key"></i> CVV:
                                 </label>
 
                                 <input
-                                    class="input"
+                                    className="input"
                                     type="password"
-                                    name="card-cvv"
-                                    id="card-cvv"
+                                    name="cvv"
+                                    id="cvv"
                                     value={formData.cvv}
                                     onChange={handleChange}
                                     autocomplete="off"
@@ -268,11 +307,10 @@ export default function Checkout() {
                                 />
                             </div>
 
-                            <div class="input-box">
+                            <div className="input-box">
                                 <button
-                                    class="form-btn"
-                                    type="submit"
-                                    onSubmit={handleSubmit}>
+                                    className="form-btn"
+                                    type="submit">
                                     Complete Purchase
                                 </button>
                             </div>
@@ -280,40 +318,43 @@ export default function Checkout() {
                     </div>
                 </div>
 
-                <div class="checkout-store">
-                    <h1 class="title">Cart Items</h1>
+                <div className="checkout-store">
+                    <h1 className="title">Cart Items</h1>
 
-                    <div class="store" id="cart-items">
-                        {products.map(prod => (
-                            <>
+                    <div className="store" id="cart-items">
+                        {cartItems.map(prod => (
+                            <div key={prod._id}>
                                 <Product
-                                    prodURL={prod.url}
-                                    prodName={prod.name}
-                                    prodQty={prod.qty}
-                                    prodPrice={prod.price}
-                                    page={"cart"}
+                                    productId={prod.productId}
+                                    prodName={prod.prodName}
+                                    prodQty={prod.prodQty}
+                                    prodPrice={prod.prodPrice}
+                                    prodType={prod.prodType}
+                                    prodURL={prod.prodURL}
+                                    prodQuantity={prod.quantity}
+                                    page={"checkout"}
                                 />
-                            </>
+                            </div>
                         ))}
                     </div>
                     <br />
                     <hr />
-                    <div class="checkout-total flex">
-                        <h1 class="subtitle">Subtotal&emsp;&nbsp;: </h1>
-                        <h1 class="subtitle">₹00.00</h1>
+                    <div className="checkout-total flex">
+                        <h1 className="subtitle">Subtotal&emsp;&nbsp;: </h1>
+                        <h1 className="subtitle">{subtotal}</h1>
                     </div>
-                    <div class="checkout-total flex">
-                        <h1 class="subtitle">CGST (9%)&nbsp;&nbsp;&nbsp;: </h1>
-                        <h1 class="subtitle">₹00.00</h1>
+                    <div className="checkout-total flex">
+                        <h1 className="subtitle">CGST (9%)&nbsp;&nbsp;&nbsp;: </h1>
+                        <h1 className="subtitle">₹{tax}</h1>
                     </div>
-                    <div class="checkout-total flex">
-                        <h1 class="subtitle">SGST (9%)&nbsp;&nbsp;&nbsp;: </h1>
-                        <h1 class="subtitle">₹00.00</h1>
+                    <div className="checkout-total flex">
+                        <h1 className="subtitle">SGST (9%)&nbsp;&nbsp;&nbsp;: </h1>
+                        <h1 className="subtitle">₹{tax}</h1>
                     </div>
                     <hr />
-                    <div class="checkout-total flex">
-                        <h1 class="title">Grand Total: </h1>
-                        <h1 class="title">₹00.00</h1>
+                    <div className="checkout-total flex">
+                        <h1 className="title">Grand Total: </h1>
+                        <h1 className="title">₹{subtotal + (tax * 2)}</h1>
                     </div>
                 </div>
             </div>

@@ -4,11 +4,15 @@ import { RouterProvider } from "react-router-dom";
 import router from "./config/router";
 // importing stylesheet
 import "./style/globals.css";
+// importing providers
+import { StoreProvider } from "./config/utils";
 
 function App() {
     return (
         <>
-            <RouterProvider router={router} />
+            <StoreProvider>
+                <RouterProvider router={router} />
+            </StoreProvider>
         </>
     );
 }
