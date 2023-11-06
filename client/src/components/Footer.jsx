@@ -1,7 +1,10 @@
 // importing stylesheet
 import "../style/footer.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Footer() {
+    const navigate = useNavigate();
+
     return (
         <>
             <footer className="footer" id="footer">
@@ -15,7 +18,7 @@ export default function Footer() {
                             }
                             alt="footer-logo"
                         />
-                        <h1 className="txt-ctr">MERCH <br /> STORE</h1>
+                        <h1 className="txt-ctr">HARVEST <br /> HAVEN</h1>
                     </div>
 
                     <div
@@ -24,8 +27,19 @@ export default function Footer() {
                             Blogs
                         </li>
 
-                        <a href="#">Choosing Right</a>
-                        <a href="#">Quality Matters</a>
+                        <a
+                            target="_blank"
+                            href="https://medium.com/the-research-nest/how-to-choose-the-right-products-for-your-online-store-287a14b1e0ff"
+                        >
+                            Choosing Right
+                        </a>
+
+                        <a
+                            target="_blank"
+                            href="https://medium.com/@salesklik/the-importance-of-high-quality-product-images-in-e-commerce-463ce90b9881"
+                        >
+                            Quality Matters
+                        </a>
                     </div>
 
                     <div className="foot-section">
@@ -33,7 +47,7 @@ export default function Footer() {
                             Store
                         </li>
 
-                        <a href="/">View Shop</a>
+                        <a onClick={() => { navigate("/shop") }}>View Shop</a>
                     </div>
 
                     <div className="foot-section">
@@ -50,7 +64,7 @@ export default function Footer() {
                 <hr />
                 <div className="below-footer-as">
                     <div className="txt-ctr">
-                        @{new Date().getFullYear()}&nbsp;Merch Store | All Rights Reserved
+                        @{new Date().getFullYear()}&nbsp;Harvest Haven | All Rights Reserved
                     </div>
                 </div>
             </footer>

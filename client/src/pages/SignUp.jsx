@@ -1,18 +1,29 @@
 // importing from react
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 // importing stylesheet
 import "../style/form.css";
+import { Store } from "../config/utils";
+import { delay } from "../config/utils";
 
 export default function SignUp() {
     const navigate = useNavigate();
+
+    const { state, dispatch: ctxDispatch } = useContext(Store);
+    const { userInfo } = state;
+    useEffect(() => {
+        if (userInfo) {
+            navigate('/');
+        }
+    }, []);
 
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         gender: "",
-        passcode: "",
-        cpasscode: "",
+        password: "",
+        cpassword: "",
     });
 
     function handleChange(event) {
@@ -26,52 +37,81 @@ export default function SignUp() {
     const [msg, setMsg] = useState("");
     const [color, setColor] = useState("");
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
-        const email = formData.email;
-        const passcode = formData.pass;
-        /*  
-            perform custom checks like 
-            incorrect email, incorrect password ... 
-            and pass the data into database 
-        */
+        if (formData.cpassword !== formData.password) {
+            setMsg("Passwords don't match!");
+            setColor("red");
+        }
+        else {
+            // signup & sign up operation
+            try {
+                const { data } = await axios.post('http://localhost:5001/api/users/signup', {
+                    name: formData.name,
+                    email: formData.email,
+                    gender: formData.gender,
+                    password: formData.password,
+                    isAdmin: false
+                })
+                if (data.message === "Email Already Exists") {
+                    setMsg(data.message);
+                    setColor("red");
+                }
+                else {
+                    ctxDispatch({
+                        type: 'USER_SIGNIN',
+                        payload: data
+                    });
+                    localStorage.setItem("userInfo", JSON.stringify(data));
+                    setMsg("New Account Created!");
+                    setColor("green");
+                    await delay(500);
+                    setMsg("Redirecting... wait");
+                    await delay(500);
+                    navigate("/shop");
+                }
+            } catch (error) {
+                setMsg("Unexpected error occured. Try again!");
+                setColor("red");
+            }
+        }
     }
-    
+
     return (
         <>
-            <div class="home">
-                <div class="form-page flex">
-                    <div class="form-left flex">
+            <div className="home">
+                <div className="form-page flex">
+                    <div className="form-left flex">
                         <img
-                            class="home-main"
+                            className="home-main"
                             src={
                                 "/images/store-name.png"
                             }
                             alt="home main img"
                         />
-                        <h1 class="title txt-ctr">Welcome to Harvest Haven!</h1>
+                        <h1 className="title txt-ctr">Welcome to Harvest Haven!</h1>
                     </div>
 
-                    <div class="form-right flex sign-in">
-                        <div class="form">
-                            <h1 class="title">Create New Account</h1>
-                            <h1 class="subtitle">** Enter all details to create account **</h1>
+                    <div className="form-right flex sign-in">
+                        <div className="form">
+                            <h1 className="title">Create New Account</h1>
+                            <h1 className="subtitle">** Enter all details to create account **</h1>
 
-                            <form action="{{ url_for('signup') }}" method="post">
-                                <div class="input-box">
-                                    <div class="input msg" id={color}>
+                            <form onSubmit={handleSubmit}>
+                                <div className="input-box">
+                                    <div className="input msg" id={color}>
                                         {msg}
                                     </div>
                                 </div>
 
-                                <div class="input-box">
+                                <div className="input-box">
                                     <label
                                         for="name">
                                         Full Name:
                                     </label>
 
                                     <input
-                                        class="input"
+                                        className="input"
                                         type="text"
                                         name="name"
                                         id="name"
@@ -83,14 +123,14 @@ export default function SignUp() {
                                     />
                                 </div>
 
-                                <div class="input-box">
+                                <div className="input-box">
                                     <label
                                         for="email">
                                         Email Address:
                                     </label>
 
                                     <input
-                                        class="input"
+                                        className="input"
                                         type="email"
                                         name="email"
                                         id="email"
@@ -102,14 +142,14 @@ export default function SignUp() {
                                     />
                                 </div>
 
-                                <div class="input-box">
+                                <div className="input-box">
                                     <label
                                         for="gender">
                                         Gender:
                                     </label>
 
                                     <select
-                                        class="input"
+                                        className="input"
                                         name="gender"
                                         id="gender"
                                         value={formData.gender}
@@ -121,18 +161,18 @@ export default function SignUp() {
                                     </select>
                                 </div>
 
-                                <div class="input-box">
+                                <div className="input-box">
                                     <label
-                                        for="passcode">
+                                        for="password">
                                         Password:
                                     </label>
 
                                     <input
-                                        class="input"
+                                        className="input"
                                         type="password"
                                         name="password"
                                         id="password"
-                                        value={formData.passcode}
+                                        value={formData.password}
                                         onChange={handleChange}
                                         placeholder="Pass****"
                                         autocomplete="off"
@@ -140,18 +180,18 @@ export default function SignUp() {
                                     />
                                 </div>
 
-                                <div class="input-box">
+                                <div className="input-box">
                                     <label
-                                        for="c-passcode">
+                                        for="c-password">
                                         Retype Password:
                                     </label>
 
                                     <input
-                                        class="input"
+                                        className="input"
                                         type="password"
-                                        name="c-password"
-                                        id="c-password"
-                                        value={formData.cpasscode}
+                                        name="cpassword"
+                                        id="cpassword"
+                                        value={formData.cpassword}
                                         onChange={handleChange}
                                         placeholder="Pass****"
                                         autocomplete="off"
@@ -159,17 +199,17 @@ export default function SignUp() {
                                     />
                                 </div>
 
-                                <div class="input-box">
+                                <div className="input-box">
                                     <button
-                                        class="form-btn"
+                                        className="form-btn"
                                         type="submit">
                                         Sign Up
                                     </button>
                                 </div>
                             </form>
 
-                            <div class="below-form flex">
-                                <span class="flex gap-5">Already have an account? <div onClick={() => {navigate("/signin")}}>Sign In</div></span>
+                            <div className="below-form flex">
+                                <span className="flex gap-5">Already have an account? <div onClick={() => { navigate("/signin") }}>Sign In</div></span>
                             </div>
                         </div>
                     </div>

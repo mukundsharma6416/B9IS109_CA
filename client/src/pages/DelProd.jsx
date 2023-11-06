@@ -1,10 +1,66 @@
 // importing from react
-import { useState } from "react";
+import { useState, useEffect, useReducer, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import logger from "use-reducer-logger";
+import { delay } from "../config/utils";
+import { Store, getError } from "../config/utils";
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'FETCH_REQUEST':
+            return { ...state, loading: true };
+        case 'FETCH_SUCCESS':
+            return { ...state, products: action.payload, loading: false };
+        case 'FETCH_FAIL':
+            return { ...state, loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
 
 export default function DelProd() {
+    const navigate = useNavigate();
+
+    const { state } = useContext(Store);
+    const { userInfo } = state;
+
     const [formData, setFormData] = useState({
         p_id: 0,
     });
+
+    const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
+        loading: true,
+        error: "",
+        products: [],
+    });
+
+    useEffect(() => {
+        if (!userInfo) {
+            navigate("/");
+        }
+
+        if (userInfo) {
+            if (!userInfo.isAdmin)
+                navigate("/");
+        }
+        const fetchData = async () => {
+            dispatch({ type: 'FETCH_REQUEST' });
+            try {
+                const result = await axios.get('api/products');
+                dispatch({
+                    type: 'FETCH_SUCCESS',
+                    payload: result.data,
+                })
+            } catch (err) {
+                dispatch({
+                    type: 'FETCH_FAIL',
+                    payload: getError(err),
+                })
+            }
+        }
+        fetchData();
+    }, []);
 
     function handleChange(event) {
         const { name, value, type, checked } = event.target;
@@ -15,51 +71,69 @@ export default function DelProd() {
     }
 
     const [msg, setMsg] = useState("");
-    const [color, setColor] = useState("green");
-    
-    function handleSubmit() {
-        // send data to db
+    const [color, setColor] = useState("");
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        try {
+            const { data } = await axios.post('api/products/delete-prod', {
+                id: formData.p_id,
+            })
+            console.log(data.message === "success");
+            if (data) {
+                localStorage.setItem("userInfo", JSON.stringify(data));
+                setMsg("Delete Successful!");
+                setColor("green");
+                await delay(500);
+                setMsg("Redirecting... wait");
+                await delay(500);
+                navigate("/admin-dashboard");
+            }
+        } catch (error) {
+            setMsg("Delete Unsuccessful!");
+            setColor("red");
+        }
     }
-    
+
     return (
         <>
-            <div class="admin-forms">
-                <div class="form">
-                    <h1 class="title">Delete Item</h1>
-                    <h1 class="subtitle">** Note: The action cannot be revoked, think before deleting **</h1>
+            <div className="admin-forms">
+                <div className="form">
+                    <h1 className="title">Delete Product</h1>
+                    <h1 className="subtitle">** Note: The action cannot be revoked, think before deleting **</h1>
 
-                    <form action="?" method="post">
-                        <div class="input-box">
-                            <div class="input msg" id={color}>
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-box">
+                            <div className="input msg" id={color}>
                                 {msg}
                             </div>
                         </div>
 
-                        <div class="input-box">
+                        <div className="input-box">
                             <label
-                                for="p_id">
+                                htmlFor="p_id">
                                 Select Item to be deleted
                             </label>
 
                             <select
-                                class="input"
+                                className="input"
                                 name="p_id"
                                 id="p_id"
                                 value={formData.p_id}
                                 onChange={handleChange}
                                 required>
                                 <option value="">-- None --</option>
-                                {/* run a for loop for all the items in the particular category */}
-                                <option value="item-name">Item Name</option>
+                                {products.map((prod) => (
+                                    <option value={prod._id}>{prod.name}</option>
+                                ))}
                             </select>
                         </div>
 
-                        <div class="input-box">
+                        <div className="input-box">
                             <button
-                                class="form-btn"
-                                type="submit"
-                                onSubmit={handleSubmit}>
-                                Delete Item
+                                className="form-btn"
+                                type="submit">
+                                Delete Product
                             </button>
                         </div>
                     </form>

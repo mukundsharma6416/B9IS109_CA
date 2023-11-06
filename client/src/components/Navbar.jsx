@@ -1,34 +1,48 @@
 // importing react
-import React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useState, useContext } from "react";
+import { redirect, useNavigate } from "react-router-dom";
 // importing stylesheet
 import "../style/navbar.css";
 // importing icons
 import { BiWrench, BiStore } from "react-icons/bi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { TbLogin2 ,TbLogout } from "react-icons/tb";
+import { TbLogin2, TbLogout } from "react-icons/tb";
+
+import { Store } from "../config/utils";
 
 export default function Navbar(props) {
     // creating variable responsible for web navigation
     const navigate = useNavigate();
-    // creating useStates for managing session
-    const [admin, setAdmin] = React.useState(true);
-    const [login, setLogin] = useState(false);
-    const [loginInfo, setLoginInfo] = useState({
-        username: "username",
-        userLogo: "userLoogo",
-    });
+    // context for storing information like session details
+    const { state, dispatch: ctxDispatch } = useContext(Store);
+    const {
+        cart,
+        userInfo
+    } = state;
 
-    function signOut() {
-        // call to signout function
+    const [admin, setAdmin] = useState(false);
+
+    useEffect(() => {
+        try {
+            userInfo.isAdmin && setAdmin(true);
+        } catch (error) {
+            console.log(error.message);
+        }
+    }, []);
+
+    function signOutHandler() {
+        ctxDispatch({
+            type: 'USER_SIGNOUT'
+        })
+        navigate("/");
     }
 
     return (
         <>
             <nav>
                 <div className="logo">
-                    <label><div href="./index.html">Merch Store</div></label>
+                    <label><div onClick={() => {navigate("/")}}>Harvest Haven</div></label>
                 </div>
                 <div className="nav-actions">
                     {admin && (
@@ -51,22 +65,29 @@ export default function Navbar(props) {
                         <div>
                             <AiOutlineShoppingCart size={25} />
                             <p className="nav-action-label">Cart</p>
+                            {cart.cartItems.length > 0 && (
+                                <span className="cart-count" id="red">
+                                    {cart.cartItems.reduce((a, c) => a + c.quantity, 0)}
+                                </span>
+                            )}
                         </div>
                     </button>
 
-                    <button className="nav-btn" onClick={() => { navigate("/signin") }}>
-                        <div>
-                            <TbLogin2 size={25} />
-                            <p className="nav-action-label">Sign In</p>
-                        </div>
-                    </button>
-
-                    <button className="nav-btn" onClick={signOut}>
-                        <div>
-                            <TbLogout size={25} />
-                            <p className="nav-action-label">Sign Out</p>
-                        </div>
-                    </button>
+                    {userInfo ? (
+                        <button className="nav-btn" onClick={signOutHandler}>
+                            <div>
+                                <TbLogout size={25} />
+                                <p className="nav-action-label">Sign Out</p>
+                            </div>
+                        </button>
+                    ) : (
+                        <button className="nav-btn" onClick={() => { navigate("/signin") }}>
+                            <div>
+                                <TbLogin2 size={25} />
+                                <p className="nav-action-label">Sign In</p>
+                            </div>
+                        </button>
+                    )}
                 </div>
             </nav>
         </>
