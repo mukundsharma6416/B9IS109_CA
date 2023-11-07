@@ -27,8 +27,6 @@ export default function Checkout() {
     const [msg, setMsg] = useState("");
     const [color, setColor] = useState("");
 
-    const [sendCart, setSendCart] = useState({});
-
     useEffect(() => {
         if (!userInfo) {
             navigate('/signin');
@@ -58,16 +56,15 @@ export default function Checkout() {
 
     async function handleSubmit(event) {
         event.preventDefault();
+        const sendCart = [];
         try {
             await cartItems.map((item) => {
+                const { prodName, quantity } = item;
                 console.log(item);
-                setSendCart(prevState => {
-                    return {
-                        ...prevState,
-                        [item.prodName]: item.quantity
-                    }
-                })
+                sendCart.push({ [prodName]: quantity });
             });
+
+            console.log(sendCart);
 
             const { data } = await axios.post('/api/orders/place', {
                 id: userInfo._id,
@@ -88,7 +85,7 @@ export default function Checkout() {
                 navigate("/");
             }
         } catch (error) {
-            setMsg("Couldn't place order!");
+            setMsg(error.message);
             setColor("red");
         }
     }
@@ -141,7 +138,7 @@ export default function Checkout() {
                                     id="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    placeholder="Eg: abc@gmail.com"
+                                    placeholder="Eg: johndoe@gmail.com"
                                     autocomplete="off"
                                     required
                                 />
@@ -179,7 +176,7 @@ export default function Checkout() {
                                     id="city"
                                     value={formData.city}
                                     onChange={handleChange}
-                                    placeholder="Eg: Mumbai"
+                                    placeholder="Eg: Dublin"
                                     autocomplete="off"
                                     required
                                 />
@@ -198,7 +195,7 @@ export default function Checkout() {
                                     id="state"
                                     value={formData.state}
                                     onChange={handleChange}
-                                    placeholder="Eg: Maharasthra"
+                                    placeholder="Eg: Dublin"
                                     autocomplete="off"
                                     required
                                 />
@@ -217,7 +214,7 @@ export default function Checkout() {
                                     id="zip"
                                     value={formData.zip}
                                     onChange={handleChange}
-                                    placeholder="Eg: 400010"
+                                    placeholder="Eg: 000000"
                                     autocomplete="off"
                                     required
                                 />

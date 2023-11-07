@@ -212,7 +212,7 @@ export default function EditProd() {
                         <div className="input-box">
                             <label
                                 for="p_price">
-                                Update Price: (In ₹)
+                                Update Price: (In €)
                             </label>
 
                             <input

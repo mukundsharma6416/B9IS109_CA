@@ -1,6 +1,7 @@
 import express from "express";
 import expressAsyncHandler from "express-async-handler";
 import Orders from "../model/orderModel.js";
+import Users from "../model/userModel.js";
 
 const orderRouter = express.Router();
 
@@ -30,6 +31,20 @@ orderRouter.post(
             res.send({ message: "Some unexpected error occured!" });
         }
     })
+);
+
+orderRouter.get(
+    '/:id',
+    async (req, res) => {
+        const user = await Users.findById(req.params.id);
+        const orders = await Orders.find({ email: user.email })
+        if (orders) {
+            res.send({ message: "success", orders: orders });
+        }
+        else {
+            res.send({ message: "failure" });
+        }
+    }
 );
 
 export default orderRouter;

@@ -66,7 +66,7 @@ export default function Product(props) {
                             {props.prodName} ({props.prodQty})
                         </p>
                         <p className="store-item-price">
-                            ₹{props.prodPrice}
+                            €{props.prodPrice}
                         </p>
                         {props.prodStockQty <= 5 && props.prodStockQty > 0 && <div class="out-of-stock yellow">Moving Fast</div>}
                         {props.prodStockQty <= 0 && <div class="out-of-stock" id="red">Out of Stock</div>}
