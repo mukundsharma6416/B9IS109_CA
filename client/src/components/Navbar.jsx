@@ -5,7 +5,7 @@ import { redirect, useNavigate } from "react-router-dom";
 // importing stylesheet
 import "../style/navbar.css";
 // importing icons
-import { BiWrench, BiStore } from "react-icons/bi";
+import { BiWrench, BiStore, BiUser } from "react-icons/bi";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { TbLogin2, TbLogout } from "react-icons/tb";
 
@@ -42,7 +42,7 @@ export default function Navbar(props) {
         <>
             <nav>
                 <div className="logo">
-                    <label><div onClick={() => {navigate("/")}}>Harvest Haven</div></label>
+                    <label><div onClick={() => { navigate("/") }}>Harvest Haven</div></label>
                 </div>
                 <div className="nav-actions">
                     {admin && (
@@ -74,12 +74,21 @@ export default function Navbar(props) {
                     </button>
 
                     {userInfo ? (
-                        <button className="nav-btn" onClick={signOutHandler}>
-                            <div>
-                                <TbLogout size={25} />
-                                <p className="nav-action-label">Sign Out</p>
-                            </div>
-                        </button>
+                        <>
+                            <button className="nav-btn" onClick={() => {navigate(`/profile/${userInfo._id}`)}}>
+                                <div>
+                                    <BiUser size={25} />
+                                    <p className="nav-action-label">Profile</p>
+                                </div>
+                            </button>
+
+                            <button className="nav-btn" onClick={signOutHandler}>
+                                <div>
+                                    <TbLogout size={25} />
+                                    <p className="nav-action-label">Sign Out</p>
+                                </div>
+                            </button>
+                        </>
                     ) : (
                         <button className="nav-btn" onClick={() => { navigate("/signin") }}>
                             <div>

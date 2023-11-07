@@ -139,10 +139,66 @@ const orders = [{
     name: "John Doe",
     email: "johndoe@gmail.com",
     address: "A B C D, 100100",
-    purchase: {
-        "6548669fa19bc41235cc0e9f": 2,
-        "6548669fa19bc41235cc0ea0": 3
-    }
+    purchase: [
+        { "FRESH CARROTS": 2 },
+        { "SACK OF ONIONS": 3 }
+    ]
+}, {
+    user_id: "65486920a856b4c950597507",
+    name: "hello world",
+    email: "hello@gmail.com",
+    address: "hello",
+    purchase: [
+        { "PACK OF MILK": 4 },
+        { "SPREAD CHEESE": 1 }
+    ],
+},
+{
+    user_id: "6548e7c7bdd035bceef48e38",
+    name: "Hello",
+    email: "hello@gmail.com",
+    address: "hello homehellohello world400100",
+    purchase: [
+        { "CORN": 2 },
+        { "JUICY LEMONS": 3 }
+    ],
+},
+{
+    user_id: "6548e7c7bdd035bceef48e38",
+    name: "hello",
+    email: "helloworld@gmail.com",
+    address: "hell, hell, hell, 100100",
+    purchase: [
+        { "SLICED BREAD": 2 },
+        { "BUTTER": 1 }
+    ],
+}, {
+    user_id: "6548e7c7bdd035bceef48e38",
+    name: "hello",
+    email: "johndoe@gmail.com",
+    address: "hell, hell, hell, 100100",
+    purchase: [
+        { "SLICED BREAD": 2 },
+        { "BUTTER": 1 }
+    ],
+}, {
+    user_id: "6548e7c7bdd035bceef48e38",
+    name: "hello",
+    email: "abc@gmail.com",
+    address: "hell, hell, hell, 100100",
+    purchase: [
+        { "SLICED BREAD": 2 },
+        { "BUTTER": 1 }
+    ],
+}, {
+    user_id: "6548e7c7bdd035bceef48e38",
+    name: "hello",
+    email: "helloworld@gmail.com",
+    address: "hell, hell, hell, 100100",
+    purchase: [
+        { "SLICED BREAD": 2 },
+        { "BUTTER": 1 }
+    ],
 }];
 
 export default {

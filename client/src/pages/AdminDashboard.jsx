@@ -110,7 +110,7 @@ export default function AdminDashboard() {
                                             {prod.name}
                                         </div>
                                         <div className="item-amt">
-                                            ₹{prod.price}
+                                            €{prod.price}
                                         </div>
                                         <div className="flex">
                                             <div className="item-btn item-btn-2" id="edit" onClick={() => { navigate("/edit-prod") }}>

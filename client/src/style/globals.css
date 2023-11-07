@@ -20,6 +20,7 @@
     /* other variables */
     --big-radius: 24px;
     --small-radius: 18px;
+    --v-small-radius: 10px;
     --border: 2px solid var(--secondary);
 }
 

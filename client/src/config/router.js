@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Shop from "../pages/Shop";
 import Cart from "../pages/Cart";
 import Checkout from "../pages/Checkout";
+import Profile from "../pages/Profile";
 import AdminDashboard from "../pages/AdminDashboard";
 import EditCat from "../pages/EditCat";
 import DelCat from "../pages/DelCat";
@@ -31,6 +32,9 @@ const router = createBrowserRouter([
             }, {
                 path: "/checkout",
                 element: <Checkout />,
+            }, {
+                path: "/profile/:id",
+                element: <Profile />
             }, {
                 path: "/admin-dashboard",
                 element: <AdminDashboard />,
