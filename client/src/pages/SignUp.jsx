@@ -62,13 +62,14 @@ export default function SignUp() {
                         type: 'USER_SIGNIN',
                         payload: data
                     });
-                    localStorage.setItem("userInfo", JSON.stringify(data));
+                    localStorage.setItem("userInfo", JSON.stringify(data.user));
                     setMsg("New Account Created!");
                     setColor("green");
                     await delay(500);
                     setMsg("Redirecting... wait");
                     await delay(500);
                     navigate("/shop");
+                    window.location.reload();
                 }
             } catch (error) {
                 setMsg("Unexpected error occured. Try again!");

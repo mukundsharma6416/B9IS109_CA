@@ -25,10 +25,8 @@ export default function Profile() {
         fetchData();
     }, []);
 
-    const { state, dispatch: ctxDispatch } = useContext(Store);
-    const {
-        userInfo
-    } = state;
+    const { state } = useContext(Store);
+    const { userInfo } = state;
 
     return (
         <>
