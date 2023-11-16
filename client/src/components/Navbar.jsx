@@ -21,6 +21,8 @@ export default function Navbar(props) {
         userInfo
     } = state;
 
+    const [userInformation, setUserInformation] = useState(userInfo);
+
     const [admin, setAdmin] = useState(false);
 
     useEffect(() => {
@@ -75,7 +77,7 @@ export default function Navbar(props) {
 
                     {userInfo ? (
                         <>
-                            <button className="nav-btn" onClick={() => {navigate(`/profile/${userInfo._id}`)}}>
+                            <button className="nav-btn" onClick={() => { navigate(`/profile/${userInformation._id}`) }}>
                                 <div>
                                     <BiUser size={25} />
                                     <p className="nav-action-label">Profile</p>

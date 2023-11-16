@@ -5,17 +5,6 @@ import Users from "../model/userModel.js";
 
 const orderRouter = express.Router();
 
-const order = {
-    user_id: "65486920a856b4c950597506",
-    name: "John Doe",
-    email: "johndoe@gmail.com",
-    address: "A B C D, 100100",
-    purchase: {
-        "6548669fa19bc41235cc0e9f": 2,
-        "6548669fa19bc41235cc0ea0": 3
-    }
-};
-
 orderRouter.post(
     '/place',
     expressAsyncHandler(async (req, res) => {

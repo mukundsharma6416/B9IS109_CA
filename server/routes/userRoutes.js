@@ -33,11 +33,12 @@ userRouter.post(
             );
         }
         else {
-            if (Users.create({ name, email, gender, password: bcrypt.hashSync(password), isAdmin })) {
+            if (await Users.create({ name, email, gender, password: bcrypt.hashSync(password), isAdmin })) {
                 const user = await Users.findOne({ email: req.body.email });
                 res.send(
                     {
                         user: {
+                            _id: user._id,
                             name: name,
                             email: email,
                             gender: gender,
@@ -49,9 +50,5 @@ userRouter.post(
         }
     })
 );
-
-userRouter.get('/', async (req, res) => {
-    
-});
 
 export default userRouter;

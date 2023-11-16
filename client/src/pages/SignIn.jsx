@@ -55,6 +55,7 @@ export default function SignIn() {
                 setMsg("Redirecting... wait");
                 await delay(500);
                 navigate("/shop");
+                window.location.reload();
             }
         } catch (error) {
             setMsg("Login Unsuccessful!");
