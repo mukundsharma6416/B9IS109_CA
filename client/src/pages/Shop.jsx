@@ -1,8 +1,7 @@
 // importing from react
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import logger from "use-reducer-logger";
 // importing stylesheet
 import "../style/shop.css";
 // importing components
@@ -28,7 +27,10 @@ const reducer = (state, action) => {
 export default function Shop() {
     const navigate = useNavigate();
 
-    const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
+    const [searchValue,setSearchValue]=useState("")
+    const [productsState,setProductsState]=useState([])
+
+    const [{ loading, error, products }, dispatch] = useReducer((reducer), {
         loading: true,
         error: "",
         products: [],
@@ -67,11 +69,23 @@ export default function Shop() {
             }
         })
     }
+    useEffect(() => {
+        // getCategoryNames();
+        setProductsState(
+            products.filter((prod) =>
+            prod.name.toLowerCase().includes(searchValue.toLowerCase())
+        )
+    );
+    }, [searchValue, products]);
 
     getCategoryNames();
 
+    console.log(products)
+
     return (
         <>
+
+            <input value={searchValue} onChange={(e)=>setSearchValue(e.target.value)} style={{width:"20rem",height:'3rem',marginRight:'7rem'}} type="text" className="input" placeholder="Search Products" />
             {categoryNames.map(cat => (
                 <div key={cat}>
                     <h1 className="category-title txt-ctr">{cat} Products</h1>
@@ -81,7 +95,26 @@ export default function Shop() {
                                 ? <LoadingBox />
                                 : error
                                     ? <ErrorBox message={error} />
-                                    : products.map(prod => (
+
+                                    :searchValue!==''?
+
+                                    productsState.map(prod => (
+                                        prod.type == cat &&
+                                        <div key={prod._id}>
+                                            <Product
+                                                productId={prod._id}
+                                                prodName={prod.name}
+                                                prodQty={prod.qty}
+                                                prodPrice={prod.price}
+                                                prodType={prod.type}
+                                                prodURL={prod.url}
+                                                prodStockQty={prod.stockQty}
+                                                prodQuantity={0}
+                                            />
+                                        </div>
+                                    ))
+                                    
+                                    :products.map(prod => (
                                         prod.type == cat &&
                                         <div key={prod._id}>
                                             <Product

@@ -14,6 +14,7 @@ import DelProd from "../pages/DelProd";
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
 import ErrorBox from "../components/ErrorBox";
+import { AddUser } from "../pages/AddUser";
 
 const router = createBrowserRouter([
     {
@@ -45,9 +46,14 @@ const router = createBrowserRouter([
                 path: "/del-cat",
                 element: <DelCat />,
             }, {
-                path: "/edit-prod",
+                path: "/edit-prod/:id",
                 element: <EditProd />,
-            }, {
+            }, 
+            {
+                path: "/add-user",
+                element: <AddUser/>,
+            }, 
+            {
                 path: "/del-prod",
                 element: <DelProd />,
             }, {

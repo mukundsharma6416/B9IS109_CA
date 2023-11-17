@@ -2,7 +2,6 @@
 import { useState, useEffect, useReducer, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import logger from "use-reducer-logger";
 import { delay } from "../config/utils";
 import { Store, getError } from "../config/utils";
 
@@ -30,7 +29,7 @@ export default function EditCat() {
         new_name: ""
     });
 
-    const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
+    const [{ loading, error, products }, dispatch] = useReducer((reducer), {
         loading: true,
         error: "",
         products: [],
