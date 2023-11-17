@@ -38,7 +38,7 @@ export default function SignIn() {
     async function handleSubmit(event) {
         event.preventDefault();
         try {
-            const { data } = await axios.post('http://localhost:5001/api/users/signin', {
+            const { data } = await axios.post('http://localhost:5000/api/users/signin', {
                 email: formData.email,
                 password: formData.password
             })

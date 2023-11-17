@@ -1,10 +1,10 @@
 // importing from react
 import { useState, useEffect, useReducer, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import logger from "use-reducer-logger";
 import { delay } from "../config/utils";
 import { Store, getError } from "../config/utils";
+import { useForm } from "react-hook-form"
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -20,9 +20,20 @@ const reducer = (state, action) => {
 }
 
 export default function EditProd() {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        reset,
+        formState: { errors },
+      } = useForm()
     const navigate = useNavigate();
-
+    const {id,add}=useParams()
+    console.log('id',id)
+    console.log('add',add)
+    console.log(id)
     const { state } = useContext(Store);
+    console.log(state)
     const { userInfo } = state;
 
     const [formData, setFormData] = useState({
@@ -33,7 +44,7 @@ export default function EditProd() {
         p_price: null,
     });
 
-    const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
+    const [{ loading, error, products }, dispatch] = useReducer((reducer), {
         loading: true,
         error: "",
         products: [],
@@ -51,7 +62,7 @@ export default function EditProd() {
         const fetchData = async () => {
             dispatch({ type: 'FETCH_REQUEST' });
             try {
-                const result = await axios.get('api/products');
+                const result = await axios.get('/api/products');
                 dispatch({
                     type: 'FETCH_SUCCESS',
                     payload: result.data,
@@ -66,19 +77,6 @@ export default function EditProd() {
         fetchData();
     }, []);
 
-    const categoryNames = [];
-    let flag = false;
-    function getCategoryNames() {
-        flag = false;
-        products.map((prod) => {
-            const itemExists = categoryNames.find((cat) => cat === prod.type);
-            if (!itemExists) {
-                categoryNames.push(prod.type);
-            }
-        })
-    }
-
-    getCategoryNames();
 
     function handleChange(event) {
         const { name, value, type, checked } = event.target;
@@ -90,11 +88,35 @@ export default function EditProd() {
 
     const [msg, setMsg] = useState("");
     const [color, setColor] = useState("");
+    const [categoryNames,setCategoryNames]=useState([])
 
-    async function handleSubmit(event) {
+    const getCategoryNames = () => {
+        const uniqueCategories = new Set(categoryNames);
+    
+        products.forEach((prod) => {
+            uniqueCategories.add(prod.type);
+        });
+    
+        setCategoryNames(Array.from(uniqueCategories));
+    };
+    
+    
+
+    useEffect(()=>{
+        if(products){
+
+            getCategoryNames()
+        }
+    },[products])
+
+    const printCat=()=>{
+        console.log(categoryNames)
+    }
+
+    async function handleEditSubmit(event) {
         event.preventDefault();
         try {
-            const { data } = await axios.post('api/products/edit-prod', {
+            const { data } = await axios.post('/api/products/edit-prod', {
                 id: formData.p_id,
                 name: formData.new_name,
                 qty: formData.p_qty,
@@ -119,12 +141,138 @@ export default function EditProd() {
 
     return (
         <>
+            {
+                id==='add'?(
+                    <div className="admin-forms">
+                    <div className="form">
+                        <h1 className="title">Add Product</h1>
+
+                        <form noValidate onSubmit={handleSubmit((data)=>{
+                            console.log('ranm')
+
+                            const addProduct=async()=>{
+                                try {
+                                    const res=await axios.post("/api/products",data)
+                                    reset()
+                                    navigate("/admin-dashboard")
+                                } catch (error) {
+                                    console.log(error)
+                                }
+                            }
+                            console.log(data)
+                            addProduct()
+                        })}>
+                            <div className="input-box">
+                                <div className="input msg" id={color}>
+                                    {msg}
+                                </div>
+                            </div>
+
+                            {/* name */}
+                            <div className="input-box">
+                                <label
+                                    htmlFor="p_id">
+                                    Product Name
+                                </label>
+                                
+                                <input {...register("name",{required:"name is required"})} className="input" type="text" placeholder="Eg. Corns" />
+                            </div>
+
+                            {/* quantity */}
+                            <div className="input-box">
+                                <label
+                                    for="new_name">
+                                    Quantity
+                                </label>
+    
+                                <input
+                                    className="input"
+                                    type="text"
+                                    placeholder="Eg: 5"
+                                    autocomplete="off"
+                                    required
+                                    {...register("qty",{required:"qty is required"})}
+                                />
+                            </div>
+
+                            {/* price */}
+                            <div className="input-box">
+                                <label
+                                    htmlFor="cat">
+                                    Price
+                                </label>
+    
+                                <input {...register("price",{required:"price is required"})}t type="text" className="input" placeholder="Eg: 300"/>
+                            </div>
+                            
+                            {/* type */}
+                            <div className="input-box">
+                                <label
+                                    for="p_qty">
+                                    Type
+                                </label>
+                                <select {...register("type",{required:"type is required"})} className="input">
+                                        <option selected value="">--none--</option>
+                                        <option value="loose">Loose</option>
+                                        <option value="dairy">Dairy</option>
+                                        <option value="packaged">Packaged</option>
+                                </select>
+                            </div>
+
+                            {/* url */}
+                            <div className="input-box">
+                                <label
+                                    for="p_price">
+                                   Url
+                                </label>
+    
+                                <input
+                                    className="input"
+                                    type="text"
+                                    {...register("url",{required:"url is required"})}
+                                    id="p_price"
+                                    value={formData.p_price}
+                                    onChange={handleChange}
+                                    autocomplete="off"
+                                    required
+                                />
+                            </div>
+
+                            {/* qty */}
+                            <div className="input-box">
+                                <label
+                                    for="p_price">
+                                   Stock Qty
+                                </label>
+                                <input
+                                    className="input"
+                                    type="text"
+                                    {...register("stockQty",{required:"stock quantity is required"})}
+                                    id="p_price"
+                                    autocomplete="off"
+                                    required
+                                    placeholder="Eg: 12"
+                                />
+                            </div>
+    
+                            <div className="input-box">
+                                <button
+                                    className="form-btn"
+                                    type="submit">
+                                    Add Product
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>  
+                ):(
+                    
             <div className="admin-forms">
                 <div className="form">
                     <h1 className="title">Edit Product Details</h1>
                     <h1 className="subtitle">** If you do not wish to edit any detail, leave the field empty **</h1>
 
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleEditSubmit}>
                         <div className="input-box">
                             <div className="input msg" id={color}>
                                 {msg}
@@ -237,7 +385,8 @@ export default function EditProd() {
                         </div>
                     </form>
                 </div>
-            </div>
+            </div>                )
+            }
         </>
     );
 };

@@ -2,7 +2,6 @@
 import { useEffect, useReducer, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import logger from "use-reducer-logger";
 // importing stylesheets
 import "../style/shop.css";
 // importing icons
@@ -33,7 +32,7 @@ export default function AdminDashboard() {
     const { state } = useContext(Store);
     const { userInfo } = state;
 
-    const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
+    const [{ loading, error, products }, dispatch] = useReducer((reducer), {
         loading: true,
         error: "",
         products: [],
@@ -86,14 +85,22 @@ export default function AdminDashboard() {
     return (
         <>
             <div className="admin-page">
+                <div style={{display:"flex",flexDirection:"column"}}>
+
                 <h1 className="title txt-ctr">Welcome Store Manager</h1>
+                <div style={{display:"flex",columnGap:"1rem",justifyContent:'center',alignItems:"center"}}>
+                    <button  className="item add item-btn gap-5" onClick={() => { navigate(`/edit-prod/add`) }} style={{alignSelf:"center",marginTop:'1rem'}}>Add Product</button>
+                    <button  className="item add item-btn gap-5" onClick={() => { navigate(`/add-user`) }} style={{alignSelf:"center",marginTop:'1rem'}}>Add User</button>
+                </div>
+                </div>
+
 
                 <div className="store">
                     {categoryNames.map(cat => (
                         <div className="store-item category" key={cat}>
                             <h1 className="store-item-title txt-ctr">{cat} PRODUCTS</h1>
                             <div className="edit-category flex gap-5">
-                                <div className="item add item-btn gap-5 w-100" id="edit" onClick={() => { navigate("/edit-cat") }}>
+                                <div className="item add item-btn gap-5 w-100" id="edit" onClick={() => { navigate("/edit-cat/") }}>
                                     <BiEditAlt size={25} />
                                     Edit
                                 </div>
@@ -113,7 +120,7 @@ export default function AdminDashboard() {
                                             €{prod.price}
                                         </div>
                                         <div className="flex">
-                                            <div className="item-btn item-btn-2" id="edit" onClick={() => { navigate("/edit-prod") }}>
+                                            <div className="item-btn item-btn-2" id="edit" onClick={() => { navigate(`/edit-prod/${prod._id}`) }}>
                                                 <BiEditAlt size={25} />
                                             </div>
                                             <div className="item-btn item-btn-2" id="delete" onClick={() => { navigate("/del-prod") }}>

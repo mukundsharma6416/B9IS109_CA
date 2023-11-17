@@ -49,6 +49,16 @@ productRouter.post('/edit-prod', async (req, res) => {
         res.send({ message: "failure" });
     }
 });
+productRouter.post('/', async (req, res) => {
+    try {
+        const newProudct=new Products(req.body)
+        await newProudct.save()
+        return res.status(201).json(newProudct)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({'message':'some error occured'})
+    }
+});
 
 productRouter.post('/delete-prod', async (req, res) => {
     if (await Products.deleteOne({ _id: req.body.id })) {

@@ -8,6 +8,7 @@ import axios from "axios";
 
 export default function Product(props) {
     const { state, dispatch: ctxDispatch } = useContext(Store);
+
     const { cart } = state;
 
     const [product, setProduct] = useState(props);
