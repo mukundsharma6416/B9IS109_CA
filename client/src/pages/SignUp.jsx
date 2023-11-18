@@ -90,7 +90,7 @@ export default function SignUp() {
                             }
                             alt="home main img"
                         />
-                        <h1 className="title txt-ctr">Welcome to Harvest Haven!</h1>
+                        <h1 className="title txt-ctr">Welcome to GroceryCart!</h1>
                     </div>
 
                     <div className="form-right flex sign-in">
