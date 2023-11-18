@@ -339,12 +339,12 @@ export default function Checkout() {
                     </div>
                     <div className="checkout-total flex">
                         <h1 className="subtitle">Vat (13.5%)&nbsp;&nbsp;&nbsp;: </h1>
-                        <h1 className="subtitle">₹{tax}</h1>
+                        <h1 className="subtitle">€{tax}</h1>
                     </div>
                     <hr />
                     <div className="checkout-total flex">
                         <h1 className="title">Grand Total: </h1>
-                        <h1 className="title">₹{subtotal + (tax * 2)}</h1>
+                        <h1 className="title">€{subtotal + (tax * 2)}</h1>
                     </div>
                 </div>
             </div>
