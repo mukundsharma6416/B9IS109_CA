@@ -1,12 +1,9 @@
-// importing from react
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-// importing stylesheets
 import "../style/checkout.css";
 import "../style/shop.css";
 import "../style/form.css";
 import Product from "../components/Product";
-// importing contexts
 import { Store } from "../config/utils";
 import axios from "axios";
 import { delay } from "../config/utils";
@@ -22,7 +19,7 @@ export default function Checkout() {
     }
 
     const subtotal = roundToTwo(cartItems.reduce((a, c) => a + (c.prodPrice * c.quantity), 0));
-    const tax = roundToTwo(subtotal * 0.09);
+    const tax = roundToTwo(subtotal * 0.135);
 
     const [msg, setMsg] = useState("");
     const [color, setColor] = useState("");
@@ -341,11 +338,7 @@ export default function Checkout() {
                         <h1 className="subtitle">{subtotal}</h1>
                     </div>
                     <div className="checkout-total flex">
-                        <h1 className="subtitle">CGST (9%)&nbsp;&nbsp;&nbsp;: </h1>
-                        <h1 className="subtitle">₹{tax}</h1>
-                    </div>
-                    <div className="checkout-total flex">
-                        <h1 className="subtitle">SGST (9%)&nbsp;&nbsp;&nbsp;: </h1>
+                        <h1 className="subtitle">Vat (13.5%)&nbsp;&nbsp;&nbsp;: </h1>
                         <h1 className="subtitle">₹{tax}</h1>
                     </div>
                     <hr />
