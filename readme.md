@@ -1,4 +1,4 @@
-# Harvest Haven MERN
+# GroceryCart MERN
 
 ###  Step 1: 
 ##### Create an account on MongoDB Atlas
