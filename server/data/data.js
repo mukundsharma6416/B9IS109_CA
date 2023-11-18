@@ -121,14 +121,14 @@ const users = [{
     password: bcrypt.hashSync("johndoe"),
     isAdmin: true
 }, {
-    name: "Hello World",
-    email: "helloworld@gmail.com",
+    name: "Mukund Sharma",
+    email: "mukund@gmail.com",
     gender: "male",
-    password: bcrypt.hashSync("helloworld"),
-    isAdmin: false
+    password: bcrypt.hashSync("mukund"),
+    isAdmin: true
 }, {
-    name: "Hello",
-    email: "hello@gmail.com",
+    name: "User",
+    email: "user@gmail.com",
     gender: "female",
     password: bcrypt.hashSync("hello"),
     isAdmin: false
