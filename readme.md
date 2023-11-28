@@ -1,4 +1,4 @@
-# Harvest Haven MERN
+# GroceryCart MERN
 
 ###  Step 1: 
 ##### Create an account on MongoDB Atlas
@@ -28,9 +28,9 @@ npm start
 ### Step 4: 
 ##### Go to browser and type these three URLs: 
 
-### [http:localhost:5000/api/seed/products](http:localhost:5000/api/seed/products)
-### [http:localhost:5000/api/seed/users](http:localhost:5000/api/seed/users)
-### [http:localhost:5000/api/seed/orders](http:localhost:5000/api/seed/orders)
+### [http:localhost:5001/api/seed/products](http:localhost:5001/api/seed/products)
+### [http:localhost:5001/api/seed/users](http:localhost:5001/api/seed/users)
+### [http:localhost:5001/api/seed/orders](http:localhost:5001/api/seed/orders)
 
 ##### As soon as you type the URL, a json file appears on the page. If so, data has been entered in the mongoDB database
 

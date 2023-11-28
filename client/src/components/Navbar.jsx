@@ -44,7 +44,7 @@ export default function Navbar(props) {
         <>
             <nav>
                 <div className="logo">
-                    <label><div onClick={() => { navigate("/") }}>Harvest Haven</div></label>
+                    <label><div onClick={() => { navigate("/") }}>GroceryCart</div></label>
                 </div>
                 <div className="nav-actions">
                     {admin && (

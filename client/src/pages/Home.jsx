@@ -4,7 +4,7 @@ import "../style/home.css";
 export default function Home() {
     return (
         <>
-            <h1 className="title txt-ctr">Welcome to Merch Store</h1>
+            <h1 className="title txt-ctr">Welcome to GroceryCart</h1>
             <img
                 className="home-main"
                 src={
