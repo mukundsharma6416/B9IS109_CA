@@ -87,7 +87,7 @@ export default function AdminDashboard() {
             <div className="admin-page">
                 <div style={{display:"flex",flexDirection:"column"}}>
 
-                <h1 className="title txt-ctr">Welcome Store Manager</h1>
+                <h1 className="title txt-ctr">Welcome to Admin Dashboard</h1>
                 <div style={{display:"flex",columnGap:"1rem",justifyContent:'center',alignItems:"center"}}>
                     <button  className="item add item-btn gap-5" onClick={() => { navigate(`/edit-prod/add`) }} style={{alignSelf:"center",marginTop:'1rem'}}>Add Product</button>
                     <button  className="item add item-btn gap-5" onClick={() => { navigate(`/add-user`) }} style={{alignSelf:"center",marginTop:'1rem'}}>Add User</button>
