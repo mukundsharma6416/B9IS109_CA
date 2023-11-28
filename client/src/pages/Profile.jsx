@@ -14,7 +14,7 @@ export default function Profile() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const order = await axios.get(`http://localhost:5001/api/orders/${id}`);
+                const order = await axios.get(`http://localhost:5000/api/orders/${id}`);
                 if (order.data.message === "success") {
                     setOrders(order.data.orders);
                 }

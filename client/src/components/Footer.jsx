@@ -18,7 +18,7 @@ export default function Footer() {
                             }
                             alt="footer-logo"
                         />
-                        <h1 className="txt-ctr">Grocery <br /> Cart</h1>
+                        <h1 className="txt-ctr">HARVEST <br /> HAVEN</h1>
                     </div>
 
                     <div
@@ -64,7 +64,7 @@ export default function Footer() {
                 <hr />
                 <div className="below-footer-as">
                     <div className="txt-ctr">
-                        @{new Date().getFullYear()}&nbsp;GroceryCart | All Rights Reserved
+                        @{new Date().getFullYear()}&nbsp;Harvest Haven | All Rights Reserved
                     </div>
                 </div>
             </footer>

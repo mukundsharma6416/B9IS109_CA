@@ -46,7 +46,7 @@ export default function SignUp() {
         else {
             // signup & sign up operation
             try {
-                const { data } = await axios.post('http://localhost:5001/api/users/signup', {
+                const { data } = await axios.post('http://localhost:5000/api/users/signup', {
                     name: formData.name,
                     email: formData.email,
                     gender: formData.gender,
@@ -90,7 +90,7 @@ export default function SignUp() {
                             }
                             alt="home main img"
                         />
-                        <h1 className="title txt-ctr">Welcome to GroceryCart!</h1>
+                        <h1 className="title txt-ctr">Welcome to Harvest Haven!</h1>
                     </div>
 
                     <div className="form-right flex sign-in">

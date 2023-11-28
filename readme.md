@@ -1,4 +1,4 @@
-# GroceryCart MERN
+# Harvest Haven MERN
 
 ###  Step 1: 
 ##### Create an account on MongoDB Atlas
@@ -26,6 +26,12 @@ npm start
 ##### It will download all the dependencies and start a react app
 
 ### Step 4: 
-### [http:localhost:5001/api/seed/products](http:localhost:5001/api/seed/products)
-### [http:localhost:5001/api/seed/users](http:localhost:5001/api/seed/users)
-### [http:localhost:5001/api/seed/orders](http:localhost:5001/api/seed/orders)
+##### Go to browser and type these three URLs: 
+
+### [http:localhost:5000/api/seed/products](http:localhost:5000/api/seed/products)
+### [http:localhost:5000/api/seed/users](http:localhost:5000/api/seed/users)
+### [http:localhost:5000/api/seed/orders](http:localhost:5000/api/seed/orders)
+
+##### As soon as you type the URL, a json file appears on the page. If so, data has been entered in the mongoDB database
+
+## You are good to go!
