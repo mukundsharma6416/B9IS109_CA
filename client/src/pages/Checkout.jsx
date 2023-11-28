@@ -344,7 +344,7 @@ export default function Checkout() {
                     <hr />
                     <div className="checkout-total flex">
                         <h1 className="title">Grand Total: </h1>
-                        <h1 className="title">€{subtotal + (tax * 2)}</h1>
+                        <h1 className="title">€{roundToTwo(subtotal + (tax * 2))}</h1>
                     </div>
                 </div>
             </div>
