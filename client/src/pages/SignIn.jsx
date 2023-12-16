@@ -1,6 +1,7 @@
 // importing from react
 import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 import { delay } from "../config/utils";
 import axios from "axios";
 // importing stylesheet
@@ -29,19 +30,29 @@ export default function SignIn() {
         setFormData(prevFormData => ({
             ...prevFormData,
             [name]: type === "checkbox" ? checked : value,
-        }))
+        }));
     }
 
     const [msg, setMsg] = useState("");
     const [color, setColor] = useState("");
+    const [recaptchaValue, setRecaptchaValue] = useState(null);
 
     async function handleSubmit(event) {
         event.preventDefault();
+        
+        // Check if reCAPTCHA is validated
+        if (!recaptchaValue) {
+            setMsg("Please complete the reCAPTCHA verification.");
+            setColor("red");
+            return;
+        }
+
         try {
             const { data } = await axios.post('http://localhost:5001/api/users/signin', {
                 email: formData.email,
                 password: formData.password
-            })
+            });
+
             console.log(data);
             if (data) {
                 ctxDispatch({
@@ -60,6 +71,9 @@ export default function SignIn() {
         } catch (error) {
             setMsg("Login Unsuccessful!");
             setColor("red");
+        } finally {
+            // Reset reCAPTCHA value after submission
+            setRecaptchaValue(null);
         }
     }
 
@@ -93,7 +107,7 @@ export default function SignIn() {
 
                                 <div className="input-box">
                                     <label
-                                        for="email">
+                                        htmlFor="email">
                                         Email Address:
                                     </label>
 
@@ -105,14 +119,14 @@ export default function SignIn() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         placeholder="abc@gmail.com"
-                                        autocomplete="off"
+                                        autoComplete="off"
                                         required
                                     />
                                 </div>
 
                                 <div className="input-box">
                                     <label
-                                        for="password">
+                                        htmlFor="password">
                                         Password:
                                     </label>
 
@@ -124,8 +138,15 @@ export default function SignIn() {
                                         value={formData.password}
                                         onChange={handleChange}
                                         placeholder="Pass****"
-                                        autocomplete="off"
+                                        autoComplete="off"
                                         required
+                                    />
+                                </div>
+
+                                <div className="input-box">
+                                    <ReCAPTCHA
+                                        sitekey="6Ld-ni8pAAAAANDrHULj6FTwO6Y2XcsbNbYejSh4"
+                                        onChange={(value) => setRecaptchaValue(value)}
                                     />
                                 </div>
 
